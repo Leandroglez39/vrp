@@ -1,4 +1,5 @@
 from flask import Flask, request, make_response, jsonify
+from flask_cors import CORS
 import json
 from vrp import convert_dict_to_list, distace_between_coords, solve_vrp
 
@@ -22,6 +23,7 @@ var_json = {
 }
 
 app = Flask(__name__)
+CORS(app)
 
 PORT = 3030
 HOST = '0.0.0.0'
