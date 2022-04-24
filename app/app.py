@@ -1,7 +1,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
-from vrp import convert_dict_to_list, distace_between_coords, solve_vrp
+from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features
 
 var_json = {
     "coords": {0: (-70.69929, 19.46078),
@@ -68,6 +68,18 @@ def events():
 
     return make_response(jsonify(pro.best_routes), 200)
 
+@app.route('/route', methods=['POST'])
+def routes():
+
+    event_data = request.json
+
+    dump_data = json.dumps(event_data)
+    
+    json_data = json.loads(dump_data)       
+   
+    var = openrouteservice_features(json_data["coordinates"])
+    
+    return make_response(jsonify(var), 200)
 
 if __name__ == '__main__':
     print("Server Running app in port %s"%(PORT))

@@ -27,7 +27,7 @@ def draw_graph(G):
 
     nx.draw(G, pos=nx.spring_layout(G), with_labels=True, node_size=500,
             node_color='#00FF00', edge_color='#0000FF', font_size=10)
-    plt.show()
+    #plt.show()
 
 
 def openrouteservice_features(coords):
@@ -37,6 +37,7 @@ def openrouteservice_features(coords):
     routes = client.directions(
         coords,
         profile="driving-car",
+        extra_info=["waytype", "steepness"],
         format='geojson')
 
     # return routes['features'][0]['properties']['segments'][0]['distance']
@@ -62,7 +63,7 @@ def draw_graph_with_edge_value(G, cases="cost"):
         nx.draw_networkx_edge_labels(
             G, pos=position, edge_labels=nx.get_edge_attributes(G, 'duration'))
 
-    plt.show()
+    #plt.show()
 
     set_node_attributes(G, values=TIME_WINDOWS_UPPER, name="upper")
     set_node_attributes(G, values=TIME_WINDOWS_UPPER, name="upper")
