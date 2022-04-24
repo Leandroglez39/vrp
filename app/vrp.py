@@ -117,6 +117,9 @@ def solve_vrp(dist_matrix,
         G, load_capacity=load_capacity, time_windows=True)
     #prob.pickup_delivery = True
     #prob.solve(cspy = False)
+    
+    prob.drop_penalty = 1000
+    
     prob.solve()
 
     return prob
