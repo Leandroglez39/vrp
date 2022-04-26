@@ -118,7 +118,7 @@ def solve_vrp(dist_matrix,
     #prob.pickup_delivery = True
     #prob.solve(cspy = False)
     
-    prob.drop_penalty = 1000
+    #prob.drop_penalty = 1000
     
     prob.solve()
 
