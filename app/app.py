@@ -1,26 +1,8 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
-from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features
+from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route
 
-var_json = {
-    "coords": {0: (-70.69929, 19.46078),
-               1: (-70.69551, 19.45833),
-               2: (-70.69543, 19.46179)},
-
-    "demands": {0: 1,
-                1: 2,
-                2: 3},
-
-    "upper_time_windows": {0: 10,
-                           1: 20,
-                           2: 30},
-
-    "lower_time_windows": {1: 0,
-                           2: 0},
-    "load_capacity": 5
-
-}
 
 app = Flask(__name__)
 CORS(app)
@@ -43,8 +25,6 @@ def events():
     
     json_data = json.loads(dump_data)    
     
-
-    
     list_coors = convert_dict_to_list(json_data["coords"], flag=False)
     
     list_coors.append(list_coors[0])
@@ -66,7 +46,8 @@ def events():
     pro = solve_vrp(dist_matrix, list_demands, capacity,
                     TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
 
-    return make_response(jsonify(pro.best_routes), 200)
+
+    return make_response(jsonify(get_route(list_coors,pro.best_routes)), 200)
 
 @app.route('/route', methods=['POST'])
 def routes():

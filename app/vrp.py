@@ -160,6 +160,27 @@ def convert_dict_to_list(dict_data, flag=True):
     return list_data
 
 
+'''
+Calculate route of list of coordinates
+'''
+def get_route(coords,best_routes):
+    
+    resp = {}
+    aux_coords = []
+
+    for key, value in best_routes.items():
+        aux_coords.append(coords[0])
+        for i in range(1, len(value)-1):            
+            aux_coords.append(coords[value[i]])
+        aux_coords.append(coords[0])
+        print(aux_coords)
+        geojson = openrouteservice_features(aux_coords)
+        resp[key] = geojson
+        aux_coords = []
+    
+    
+    return resp
+
 if __name__ == '__main__':
 
     #G, solve = solver_vrp()
@@ -206,6 +227,9 @@ if __name__ == '__main__':
     # print(resp.best_routes)
 
     # print(resp.arrival_time)
-    var = convert_dict_to_list(
-        {'0': '-70.69929, 19.46078', '1': '-70.69551, 19.45833', '2': '-70.69543, 19.46179'}, flag=False)
+    #var = convert_dict_to_list(
+       # {'0': '-70.69929, 19.46078', '1': '-70.69551, 19.45833', '2': '-70.69543, 19.46179'}, flag=False)
+    #print(var)
+
+    var = get_route([[-69.94733, 18.48913], [-69.94944, 18.48205], [-69.9415, 18.48559]], {1:["Source", 2, 1, "Sink"],2:["Source", 1, 2, "Sink"]})
     print(var)
