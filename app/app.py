@@ -59,8 +59,11 @@ def routes():
     json_data = json.loads(dump_data)       
    
     var = openrouteservice_features(json_data["coordinates"])
-    print(var)
-    return make_response(json.dumps(var), 200)
+   
+    if type(var) == dict:
+        return make_response(json.dumps(var), 200)
+    else:
+        return make_response(jsonify(var.message['error']['message']), var.status)
 
 if __name__ == '__main__':
     print("Server Running app in port %s"%(PORT))
