@@ -1,3 +1,5 @@
+from asyncio import exceptions
+from ftplib import all_errors
 from networkx import DiGraph, set_node_attributes
 from vrpy import VehicleRoutingProblem
 import networkx as nx
@@ -32,16 +34,27 @@ def draw_graph(G):
 
 def openrouteservice_features(coords):
     # Specify your personal API key
-    client = openrouteservice.Client(
-        key='5b3ce3597851110001cf62480b20f596bd754e8c9d7da39d3ee98921')
-    routes = client.directions(
-        coords,
-        profile="driving-car",
-        extra_info=["waytype", "steepness"],
-        format='geojson')
 
+    try:
+
+        client = openrouteservice.Client(
+            key='5b3ce3597851110001cf62480b20f596bd754e8c9d7da39d3ee98921')
+        
+        routes = client.directions(
+            coords,
+            profile="driving-car",
+            extra_info=["waytype", "steepness"],
+            format='geojson')
+        
+        
+    
+    except Exception as e:
+        return e
+
+    else:
+        return routes    
     # return routes['features'][0]['properties']['segments'][0]['distance']
-    return routes
+   
 
 
 def draw_graph_with_edge_value(G, cases="cost"):
@@ -172,8 +185,7 @@ def get_route(coords,best_routes):
         aux_coords.append(coords[0])
         for i in range(1, len(value)-1):            
             aux_coords.append(coords[value[i]])
-        aux_coords.append(coords[0])
-        print(aux_coords)
+        aux_coords.append(coords[0])        
         geojson = openrouteservice_features(aux_coords)
         resp[key] = geojson
         aux_coords = []
@@ -231,5 +243,7 @@ if __name__ == '__main__':
        # {'0': '-70.69929, 19.46078', '1': '-70.69551, 19.45833', '2': '-70.69543, 19.46179'}, flag=False)
     #print(var)
 
-    var = get_route([[-69.94733, 18.48913], [-69.94944, 18.48205], [-69.9415, 18.48559]], {1:["Source", 2, 1, "Sink"],2:["Source", 1, 2, "Sink"]})
+    #var = get_route([[-69.94733, 18.48913], [-69.94944, 18.48205], [-69.9415, 18.48559]], {1:["Source", 2, 1, "Sink"],2:["Source", 1, 2, "Sink"]})
+    
+    var = openrouteservice_features([[-69.93144, 18.4928 ],[-69.93401,18.48514],[-69.93247,18.47228]])    
     print(var)
