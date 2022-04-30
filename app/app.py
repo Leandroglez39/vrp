@@ -19,6 +19,8 @@ def home():
 @app.route('/data', methods=['POST'])
 def events():
 
+    
+
     event_data = request.json
 
     dump_data = json.dumps(event_data)
@@ -28,7 +30,7 @@ def events():
     list_coors = convert_dict_to_list(json_data["coords"], flag=False)
     
     list_coors.append(list_coors[0])
-    print(list_coors)
+    
     
     list_demands = convert_dict_to_list(json_data["demands"])
     list_demands.append(0)
@@ -41,10 +43,16 @@ def events():
 
     capacity = int(json_data["load_capacity"])
 
+    
+
     dist_matrix = distace_between_coords(list_coors)
+
+    
 
     pro = solve_vrp(dist_matrix, list_demands, capacity,
                     TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
+
+    
 
     #print(pro.best_routes)
 
