@@ -46,6 +46,7 @@ def events():
     pro = solve_vrp(dist_matrix, list_demands, capacity,
                     TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
 
+    #print(pro.best_routes)
 
     return make_response(jsonify(get_route(list_coors,pro.best_routes)), 200)
 
