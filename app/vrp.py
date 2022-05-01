@@ -201,7 +201,7 @@ def get_route(coords,best_routes):
             aux_coords.append(coords[value[i]])
         aux_coords.append(coords[0])        
         geojson = openrouteservice_features(aux_coords)
-        resp[key] = [geojson,   ]        
+        resp[key] = [geojson, aux_coords]        
         aux_coords = []
     
     
