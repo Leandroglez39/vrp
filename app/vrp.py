@@ -1,11 +1,12 @@
-from asyncio import exceptions
-from ftplib import all_errors
 from networkx import DiGraph, set_node_attributes
 from vrpy import VehicleRoutingProblem
 import networkx as nx
 import openrouteservice
 import numpy as np
+from database import *
 
+ 
+distance_matrix_cache = {}
 
 def solver_vrp():
 
@@ -147,13 +148,26 @@ returns the distance in meters
 def distace_between_coords(coords):
     matrix = np.full((len(coords), len(coords)), 0, dtype=tuple)
 
+    print(distance_matrix_cache)
+    print("HOLA")
     for i in range(len(coords)-1):
         for y in range(i+1, len(coords)):
-            dist = openrouteservice_features((coords[i], coords[y]))
-            data = (dist['features'][0]['properties']['segments'][0]['distance'],
+
+            if (coords[i],coords[y]) in distance_matrix_cache:
+                dist = distance_matrix_cache[(coords[i],coords[y])][0]
+                data = distance_matrix_cache[(coords[i],coords[y])][1]
+                matrix[i][y] = (dist, data)
+                matrix[y][i] = (dist, data)
+
+            else:    
+
+                dist = openrouteservice_features((coords[i], coords[y]))
+                data = (dist['features'][0]['properties']['segments'][0]['distance'],
                     dist['features'][0]['properties']['segments'][0]['duration'])
-            matrix[i][y] = data
-            matrix[y][i] = data
+                matrix[i][y] = data
+                matrix[y][i] = data
+
+                distance_matrix_cache[(coords[i],coords[y])] = data
 
     return matrix
 
@@ -187,7 +201,7 @@ def get_route(coords,best_routes):
             aux_coords.append(coords[value[i]])
         aux_coords.append(coords[0])        
         geojson = openrouteservice_features(aux_coords)
-        resp[key] = [geojson, aux_coords]        
+        resp[key] = [geojson,   ]        
         aux_coords = []
     
     
