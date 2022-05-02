@@ -3,14 +3,11 @@ import psycopg2
 import pickle
 
 
-dictionaries = {0:1}
-
-
 '''
 Connect to Postgres database
 Insert in table "coords_cache" values
 '''
-def save_db_cache():    
+def save_db_cache(dictionaries: dict):    
 
     conn = None
     try:         
