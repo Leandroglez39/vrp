@@ -163,8 +163,6 @@ returns the distance in meters
 def distace_between_coords(coords):
     matrix = np.full((len(coords), len(coords)), 0, dtype=tuple)
 
-    print(distance_matrix_cache)
-    print("HOLA")
     for i in range(len(coords)-1):
         for y in range(i+1, len(coords)):
 
