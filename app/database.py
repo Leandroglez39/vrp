@@ -50,6 +50,26 @@ def read_db_cache():
             conn.close()
             return rest
 
+''' 
+Connect to Postgres database
+Update table "coords_cache" values
+'''
+def update_db_cache(dictionaries: dict):
+    conn = None
+    try:         
+     
+        conn = psycopg2.connect(database="postgres", user="postgres", password="postgres", host="localhost", port="5432")
+        cur = conn.cursor()
+        update_query = "UPDATE coords_cache SET value = %s, time_stamp = %s WHERE id = %s"
+        cur.execute(update_query, (pickle.dumps(dictionaries), datetime.datetime.now(), 1))   
+        conn.commit()
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+           
 
 if __name__ == '__main__':
     #save_db_cache()
