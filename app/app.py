@@ -1,7 +1,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
-from vrp import *
+from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route, save_distance_matrix_cache, read_distance_matrix_cache_from_db
 import threading
 
 app = Flask(__name__)
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     read_distance_matrix_cache_from_db()
     
-    hilo = threading.Thread(target=save_distance_matrix_cache)
+    hilo = threading.Thread(target=save_distance_matrix_cache, daemon=True)
     hilo.start()
 
     app.run(host=HOST, port=PORT, debug=False)
