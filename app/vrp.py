@@ -8,6 +8,13 @@ from database import *
  
 distance_matrix_cache = {}
 
+def init_db_cache():
+  
+    if is_table_empty("api_coords_cache"):
+        init_insert_db_cache()
+        print("Table is empty")
+        return True
+    return False
 
 def solver_vrp():
 
