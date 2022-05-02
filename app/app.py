@@ -1,7 +1,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
-from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route
+from vrp import *
 import threading
 
 app = Flask(__name__)
@@ -76,5 +76,11 @@ def routes():
 
 if __name__ == '__main__':
     print("Server Running app in port %s"%(PORT))
+
+    read_distance_matrix_cache_from_db()
+    
+    hilo = threading.Thread(target=save_distance_matrix_cache)
+    hilo.start()
+
     app.run(host=HOST, port=PORT, debug=False)
     
