@@ -2,7 +2,7 @@ from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
 from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route
-
+import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -76,5 +76,5 @@ def routes():
 
 if __name__ == '__main__':
     print("Server Running app in port %s"%(PORT))
-    app.run(host=HOST, port=PORT, debug=True)
+    app.run(host=HOST, port=PORT, debug=False)
     
