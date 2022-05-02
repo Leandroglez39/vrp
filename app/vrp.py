@@ -8,6 +8,7 @@ from database import *
  
 distance_matrix_cache = {}
 
+
 def solver_vrp():
 
     G = DiGraph()
@@ -26,6 +27,20 @@ def solver_vrp():
     return (G, prob)
 
 
+def read_distance_matrix_cache_from_db():
+    global distance_matrix_cache
+    distance_matrix_cache = read_db_cache()   
+
+'''
+Save the distance matrix cache to the database
+'''
+def save_distance_matrix_cache():
+    import time
+    while True:
+        update_db_cache(distance_matrix_cache)
+        #time.sleep(86,400)
+        time.sleep(10)
+             
 def draw_graph(G):
 
     nx.draw(G, pos=nx.spring_layout(G), with_labels=True, node_size=500,
