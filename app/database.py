@@ -1,5 +1,6 @@
 import psycopg2
 import pickle
+import datetime
 
 '''
 Connection to postgres database
@@ -35,7 +36,7 @@ def init_insert_db_cache():
         update_query = "INSERT INTO api_coords_cache (id, value, time_stamp) VALUES (1, %s, %s)"
         
      
-        cur.execute(update_query, (pickle.dumps({}),'2022-05-02 14:39:18+00'))  
+        cur.execute(update_query, (pickle.dumps({}),datetime.datetime.now())) 
        
         conn.commit()
         cur.close()
