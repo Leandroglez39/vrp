@@ -111,6 +111,86 @@ def draw_graph_with_edge_value(G, cases="cost"):
 
     set_node_attributes(G, values=TIME_WINDOWS_UPPER, name="upper")
 
+def solve_vrp_fix(dist_matrix,
+              demands,
+              load_capacity,
+              TIME_WINDOWS_LOWER,
+              TIME_WINDOWS_UPPER) -> VehicleRoutingProblem:
+    
+    G = DiGraph()
+
+    upper_time = {}
+    lower_time = {}
+    
+    dad_child = {}
+    
+
+    #Add regular edges
+    for i in range(len(dist_matrix) - 1):
+        for y in range(i+1, len(dist_matrix) - 1):
+            if i != 0:
+                G.add_edge(
+                    i, y, cost=dist_matrix[i][y][0], duration=dist_matrix[i][y][1])
+                G.add_edge(
+                    y, i, cost=dist_matrix[i][y][0], duration=dist_matrix[i][y][1])
+
+            else:
+                G.add_edge(
+                    0, y, cost=dist_matrix[i][y][0], duration=dist_matrix[i][y][1])
+                #G.add_edge(y, "Source", cost=dist_matrix[i][y][0], duration=dist_matrix[i][y][1])
+
+    # Add data to the graph from Sink
+    for x in range(1, len(dist_matrix[0]) - 1):
+        G.add_edge(
+            x, "Sink", cost=dist_matrix[0][x][0], duration=dist_matrix[0][x][1])
+
+    # Add originals demands to the graph
+    for x in range(1, len(demands) - 1):
+        G.nodes[x]['demand'] = demands[x]
+
+
+    demands = {
+        "0": [0],
+        "1": [0],
+        "2": [2,2,1],
+        "3": [2]
+        }
+
+    del demands["0"]
+
+   
+
+    # Add data por sub nodes
+    for key, value in demands.items():   
+        for x in range(1, len(value) - 1):
+            key = int(key)
+            name = 'Sub_'+ str(key) + 'node_' + str(x)  
+            dad_child[name] = key           
+            G.add_edge(key, name, cost = 0, duration = 0)
+            G.add_edge(name,'Sink', cost = dist_matrix[0][key][0], duration = dist_matrix[0][key][1])
+            
+            for i in range(1, len(dist_matrix) - 1):
+                if i != key:
+                    G.add_edge(name, i, cost = dist_matrix[key][i][0], duration = dist_matrix[key][i][1])
+            
+            G.nodes[name]["demand"] = value[x]       
+
+            upper_time[name] = TIME_WINDOWS_UPPER[str(key)]
+            lower_time[name] = TIME_WINDOWS_LOWER[str(key)]
+
+     # Set time windows
+    #set_node_attributes(G, values={**TIME_WINDOWS_LOWER, **lower_time}, name="lower")
+    #set_node_attributes(G, values={**TIME_WINDOWS_UPPER, **upper_time}, name="upper")
+
+    # Relabel depot
+    G = nx.relabel_nodes(G, {0: "Source", len(dist_matrix)-1: "Sink"})
+
+    prob = VehicleRoutingProblem(
+        G, load_capacity=load_capacity, time_windows=True)
+      
+    prob.solve()
+
+    return prob
 
 def solve_vrp(dist_matrix,
               demands,
@@ -120,6 +200,7 @@ def solve_vrp(dist_matrix,
 
     G = DiGraph()
 
+    
     for i in range(len(dist_matrix) - 1):
         for y in range(i+1, len(dist_matrix) - 1):
             if i != 0:
@@ -215,9 +296,12 @@ def get_route(coords,best_routes):
     resp = {}
     aux_coords = []
 
+
+
     for key, value in best_routes.items():
         aux_coords.append(coords[0])
-        for i in range(1, len(value)-1):            
+        for i in range(1, len(value)-1):
+            print(value)            
             aux_coords.append(coords[value[i]])
         aux_coords.append(coords[0])        
         geojson = openrouteservice_features(aux_coords)
@@ -242,6 +326,10 @@ def parse_input(json_data):
 
 def fix_demands(json_data, dict_resp):
     pass
+
+
+
+
 
 if __name__ == '__main__':
 
