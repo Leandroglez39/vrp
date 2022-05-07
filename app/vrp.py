@@ -227,6 +227,22 @@ def get_route(coords,best_routes):
     
     return resp
 
+def parse_input(json_data):
+
+    load_capacity = int(json_data['load_capacity'])
+
+    dict_resp = {}
+
+    for key, value in json_data["coords"]:
+        if value > load_capacity:
+            fix_demands(json_data, dict_resp)
+            return dict_resp
+
+    return dict_resp
+
+def fix_demands(json_data, dict_resp):
+    pass
+
 if __name__ == '__main__':
 
     #G, solve = solver_vrp()
