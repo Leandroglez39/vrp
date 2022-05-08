@@ -58,8 +58,8 @@ def save_db_cache(dictionaries: dict):
      
         conn = psycopg2.connect(database="postgres", user="postgres", password="postgres", host="localhost", port="5432")
         cur = conn.cursor()
-        insert_query = "INSERT INTO api_coords_cache (id, value) VALUES (%s, %s)"
-        cur.execute(insert_query, (1, pickle.dumps(dictionaries)))   
+        insert_query = "INSERT INTO api_coords_cache (id, value, time_stamp) VALUES (%s, %s, %s)"
+        cur.execute(insert_query, (1, pickle.dumps(dictionaries),datetime.datetime.now()))   
         conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -82,8 +82,9 @@ def read_db_cache():
         cur.execute(select_query)
         rows = cur.fetchall()
 
-        for row in rows:
-            rest = pickle.loads(row[1]) 
+        
+        if len(rows) != 0:
+            rest = pickle.loads(rows[0][1]) 
 
        
         cur.close()
@@ -104,8 +105,8 @@ def update_db_cache(dictionaries: dict):
      
         conn = psycopg2.connect( database="postgres", user="postgres", password="postgres", host="localhost", port="5432")
         cur = conn.cursor()
-        update_query = "UPDATE api_coords_cache SET value = %s WHERE id = %s"
-        cur.execute(update_query, (pickle.dumps(dictionaries), 1))   
+        update_query = "UPDATE api_coords_cache SET value = %s , time_stamp= %s WHERE id = %s"
+        cur.execute(update_query, (pickle.dumps(dictionaries), datetime.datetime.now() , 1))   
         conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -116,6 +117,7 @@ def update_db_cache(dictionaries: dict):
            
 
 if __name__ == '__main__':
-    #save_db_cache()
+    #a = {'a': 1, 'b': 2, 'c': 3}
+    #save_db_cache(a)
     var = read_db_cache()
-    print(type(var))
+    print(var)
