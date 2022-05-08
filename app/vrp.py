@@ -4,6 +4,7 @@ import networkx as nx
 import openrouteservice
 import numpy as np
 from database import *
+from modifyDict import modifyDict
 
  
 distance_matrix_cache = {}
@@ -144,19 +145,17 @@ def solve_vrp_fix(dist_matrix,
         G.add_edge(
             x, "Sink", cost=dist_matrix[0][x][0], duration=dist_matrix[0][x][1])
 
-    # Add originals demands to the graph
-    for x in range(1, len(demands) - 1):
-        G.nodes[x]['demand'] = demands[x]
-
-
-    demands = {
-        "0": [0],
-        "1": [0],
-        "2": [2,2,1],
-        "3": [2]
-        }
 
     del demands["0"]
+
+    # Add originals demands to the graph
+    for key, value in range(demands.items()):
+        G.nodes[key]['demand'] = value
+
+
+    demands = modifyDict(demands)
+
+    
 
    
 
