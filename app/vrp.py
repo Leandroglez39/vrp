@@ -45,6 +45,7 @@ Save the distance matrix cache to the database
 def save_distance_matrix_cache():
     import time
     while True:
+        
         update_db_cache(distance_matrix_cache)
         #time.sleep(86,400)
         time.sleep(10)
@@ -145,19 +146,19 @@ def solve_vrp_fix(dist_matrix,
         G.add_edge(
             x, "Sink", cost=dist_matrix[0][x][0], duration=dist_matrix[0][x][1])
 
+    
 
     del demands["0"]
 
     # Add originals demands to the graph
-    for key, value in range(demands.items()):
-        G.nodes[key]['demand'] = value
+    #for key, value in demands.items():
+    #    G.nodes[int(key)]['demand'] = value
 
 
-    demands = modifyDict(demands)
+    demands = modifyDict(demands, 2)   
 
-    
-
-   
+    for key, value in demands.items():
+        G.nodes[int(key)]['demand'] = value[0]
 
     # Add data por sub nodes
     for key, value in demands.items():   
@@ -187,9 +188,17 @@ def solve_vrp_fix(dist_matrix,
     prob = VehicleRoutingProblem(
         G, load_capacity=load_capacity, time_windows=True)
       
-    prob.solve()
+    prob.solve(max_iter=1000)
 
-    return prob
+    best_r = prob.best_routes
+
+    for key, value in best_r.items():
+        for i in range(len(value) - 1):
+            if value[i] in dad_child:
+                best_r[key][i] = dad_child[value[i]]
+
+
+    return best_r
 
 def solve_vrp(dist_matrix,
               demands,
@@ -253,6 +262,7 @@ def distace_between_coords(coords):
     for i in range(len(coords)-1):
         for y in range(i+1, len(coords)):
 
+            
             if (coords[i],coords[y]) in distance_matrix_cache:
                 dist = distance_matrix_cache[(coords[i],coords[y])][0]
                 data = distance_matrix_cache[(coords[i],coords[y])][1]
@@ -299,8 +309,7 @@ def get_route(coords,best_routes):
 
     for key, value in best_routes.items():
         aux_coords.append(coords[0])
-        for i in range(1, len(value)-1):
-            print(value)            
+        for i in range(1, len(value)-1):                    
             aux_coords.append(coords[value[i]])
         aux_coords.append(coords[0])        
         geojson = openrouteservice_features(aux_coords)

@@ -89,8 +89,8 @@ def test():
     list_coors.append(list_coors[0])
     
     
-    list_demands = convert_dict_to_list(json_data["demands"])
-    list_demands.append(0)
+    list_demands = json_data["demands"]
+    
 
     TIME_WINDOWS_LOWER = json_data["lower_time_windows"]
   
@@ -111,7 +111,8 @@ def test():
                     TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
 
 
-    return make_response(jsonify(get_route(list_coors,pro.best_routes)), 200)
+
+    return make_response(jsonify(get_route(list_coors, pro)), 200)
 
 
 if __name__ == '__main__':
