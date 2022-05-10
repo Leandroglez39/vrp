@@ -157,7 +157,7 @@ def solve_vrp_fix(dist_matrix,
 
     demands = modifyDict(demands, 20)   
 
-    print(demands)
+    
 
     for key, value in demands.items():
         G.nodes[int(key)]['demand'] = value[0]
@@ -269,13 +269,24 @@ def dist_btw_coords(coords):
                 list_coords.append(coords[i])
                 list_coords.append(coords[y])
     
+    segments = []
 
+    if len(list_coords) <= 70:
 
-    info = openrouteservice_features(list_coords)
+        info = openrouteservice_features(list_coords)
     
- 
+        segments = info['features'][0]['properties']['segments']
+    else:
+        c, r = divmod(len(list_coords), 70)
+        for i in range(c):
+            list_coords_aux = list_coords[i*70:(i+1)*70]
+            info = openrouteservice_features(list_coords_aux)
+            segments.extend(info['features'][0]['properties']['segments'])
+        if r != 0:
+            list_coords_aux = list_coords[c*70:]
+            info = openrouteservice_features(list_coords_aux)
+            segments.extend(info['features'][0]['properties']['segments'])
 
-    segments = info['features'][0]['properties']['segments']
 
     for i in range(len(segments)):
         dict_aux[(list_coords[i], list_coords[i+1])] = (segments[i]['distance'], segments[i]['duration'])
