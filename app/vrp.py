@@ -254,14 +254,54 @@ def solve_vrp(dist_matrix,
     return prob
 
 
+def dist_btw_coords(coords):
+
+    matrix = np.full((len(coords), len(coords)), 0, dtype=tuple)
+
+    dict_aux = {}
+
+    list_coords = []
+
+    for i in range(len(coords)-1):
+        for y in range(i+1, len(coords)):
+            
+            if not (coords[i], coords[y]) in distance_matrix_cache:
+                list_coords.append(coords[i])
+                list_coords.append(coords[y])
+    
+
+
+    info = openrouteservice_features(list_coords)
+    
+ 
+
+    segments = info['features'][0]['properties']['segments']
+
+    for i in range(len(segments)):
+        dict_aux[(list_coords[i], list_coords[i+1])] = (segments[i]['distance'], segments[i]['duration'])
+
+
+    for i in range(len(coords)-1):
+        for y in range(i+1, len(coords)):
+            if (coords[i],coords[y]) in dict_aux:
+                dist = dict_aux[(coords[i],coords[y])][0]
+                data = dict_aux[(coords[i],coords[y])][1]
+                matrix[i][y] = (dist, data)
+                matrix[y][i] = (dist, data)
+            else:
+                dist = distance_matrix_cache[(coords[i],coords[y])][0]
+                data = distance_matrix_cache[(coords[i],coords[y])][1]
+                matrix[i][y] = (dist, data)
+                matrix[y][i] = (dist, data)
+
+    return matrix
 '''
 Distance between a list of coordinates 
 returns the distance in meters
 '''
-
-
 def distace_between_coords(coords):
     matrix = np.full((len(coords), len(coords)), 0, dtype=tuple)
+    
 
     for i in range(len(coords)-1):
         for y in range(i+1, len(coords)):
@@ -281,7 +321,7 @@ def distace_between_coords(coords):
                 matrix[i][y] = data
                 matrix[y][i] = data
 
-                distance_matrix_cache[(coords[i],coords[y])] = data
+                distance_matrix_cache[(coords[i], coords[y])] = data
 
     return matrix
 
@@ -293,7 +333,7 @@ Convert dict to list
 
 def convert_dict_to_list(dict_data, flag=True):
     list_data = []
-    for key, value in dict_data.items():
+    for _, value in dict_data.items():
         if flag:
             list_data.append(int(value))
         else:
@@ -354,9 +394,10 @@ if __name__ == '__main__':
     #dist = openrouteservice_distace(coords)
     # print(dist)
 
-    coords = [[-69.94733, 18.48913], [-69.94944, 18.48205], [-69.9415, 18.48559], [-69.94442, 18.47749],
-              [-69.96591, 18.49284], [-69.95879, 18.46434], [-69.91924, 18.48189], [-69.94733, 18.48913]]
+    #coords = [[-69.94733, 18.48913], [-69.94944, 18.48205], [-69.9415, 18.48559], [-69.94442, 18.47749],
+    #          [-69.96591, 18.49284], [-69.95879, 18.46434], [-69.91924, 18.48189], [-69.94733, 18.48913]]
 
+    coords = [(-69.94733, 18.48913), (-69.94944, 18.48205), (-69.9415, 18.48559)]
     #coords: list = [[-70.69929, 19.46078],[-70.69551, 19.45833], [-70.69543, 19.46179], [-70.68715, 19.46841],[-70.6804, 19.4733], [-70.6870, 19.4840],[-70.69929, 19.46078]]
     demands = [2, 9, 10, 4, 5, 2, 2, 10]
 
@@ -395,5 +436,7 @@ if __name__ == '__main__':
 
     #var = get_route([[-69.94733, 18.48913], [-69.94944, 18.48205], [-69.9415, 18.48559]], {1:["Source", 2, 1, "Sink"],2:["Source", 1, 2, "Sink"]})
     
-    var = openrouteservice_features([[ -69.93144, 18.4928],[-69.93401,18.48514],[-69.93247,18.47228]])    
-    print(var)
+    #var = openrouteservice_features([[ -69.93144, 18.4928],[-69.93401,18.48514],[-69.93247,18.47228]])    
+    #print(var)
+
+    print(dist_btw_coords(coords))

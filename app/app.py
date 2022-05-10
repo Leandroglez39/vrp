@@ -1,7 +1,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
-from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route, save_distance_matrix_cache, read_distance_matrix_cache_from_db, init_db_cache, solve_vrp_fix
+from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route, save_distance_matrix_cache, read_distance_matrix_cache_from_db, init_db_cache, solve_vrp_fix, dist_btw_coords
 
 import threading
  
@@ -102,7 +102,7 @@ def test():
 
     
 
-    dist_matrix = distace_between_coords(list_coors)
+    dist_matrix = dist_btw_coords(list_coors)
 
         
 
