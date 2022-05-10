@@ -155,7 +155,9 @@ def solve_vrp_fix(dist_matrix,
     #    G.nodes[int(key)]['demand'] = value
 
 
-    demands = modifyDict(demands, 2)   
+    demands = modifyDict(demands, 20)   
+
+    print(demands)
 
     for key, value in demands.items():
         G.nodes[int(key)]['demand'] = value[0]
@@ -168,6 +170,7 @@ def solve_vrp_fix(dist_matrix,
             dad_child[name] = key           
             G.add_edge(key, name, cost = 0, duration = 0)
             G.add_edge(name,'Sink', cost = dist_matrix[0][key][0], duration = dist_matrix[0][key][1])
+            G.add_edge(0, name, cost = dist_matrix[0][key][0], duration = dist_matrix[0][key][1])
             
             for i in range(1, len(dist_matrix) - 1):
                 if i != key:
@@ -188,7 +191,7 @@ def solve_vrp_fix(dist_matrix,
     prob = VehicleRoutingProblem(
         G, load_capacity=load_capacity, time_windows=True)
       
-    prob.solve(max_iter=1000)
+    prob.solve(max_iter=1000, pricing_strategy="Hyper", exact=False)
 
     best_r = prob.best_routes
 
@@ -197,6 +200,7 @@ def solve_vrp_fix(dist_matrix,
             if value[i] in dad_child:
                 best_r[key][i] = dad_child[value[i]]
 
+    print( best_r)
 
     return best_r
 

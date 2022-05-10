@@ -18,7 +18,7 @@ def home():
     return "<h1 style='color:red'>This is home!</h1>"
 
 
-@app.route('/data', methods=['POST'])
+@app.route('/datas', methods=['POST'])
 def events():
 
     
@@ -76,7 +76,7 @@ def routes():
     else:
         return make_response(jsonify(var.message['error']['message']), var.status)
 
-@app.route('/test', methods=['POST'])
+@app.route('/data', methods=['POST'])
 def test():
     event_data = request.json
 
@@ -107,12 +107,12 @@ def test():
         
 
 
-    pro = solve_vrp_fix(dist_matrix, list_demands, capacity,
+    best_r = solve_vrp_fix(dist_matrix, list_demands, capacity,
                     TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
 
+    
 
-
-    return make_response(jsonify(get_route(list_coors, pro)), 200)
+    return make_response(jsonify(get_route(list_coors, best_r)), 200)
 
 
 if __name__ == '__main__':
