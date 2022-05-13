@@ -359,17 +359,20 @@ def get_route(coords,best_routes):
     
     resp = {}
     aux_coords = []
-
+    filter = {}
 
 
     for key, value in best_routes.items():
         aux_coords.append(coords[0])
-        for i in range(1, len(value)-1):                    
-            aux_coords.append(coords[value[i]])
+        for i in range(1, len(value)-1):
+            if  not value[i] in filter.keys():                    
+                aux_coords.append(coords[value[i]])
+                filter[value[i]] = True
         aux_coords.append(coords[0])        
         geojson = openrouteservice_features(aux_coords)
         resp[key] = [geojson, aux_coords]        
         aux_coords = []
+        filter.clear()
     
     
     return resp
