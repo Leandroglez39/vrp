@@ -155,7 +155,7 @@ def solve_vrp_fix(dist_matrix,
     #    G.nodes[int(key)]['demand'] = value
 
 
-    demands = modifyDict(demands, 20)   
+    demands = modifyDict(demands, round(load_capacity*0.9))   
 
     
 
