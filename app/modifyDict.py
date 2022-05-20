@@ -1,4 +1,3 @@
-
 def divDemand(cap_divid, x_divisor):
     cociente, resto = divmod(cap_divid, x_divisor)
    # print("Capacidad: {}, Cociente: {}, Resto: {}".format(cap_divid, cociente, resto))
@@ -20,3 +19,19 @@ def modifyDict(demands, x_divisor):
 
         demands[k] = value
     return demands
+
+
+
+def bsort(lista):
+    '''
+    Sort a list of elements using bubble sort algorithm
+    '''
+    
+    for _ in range(len(lista)):
+        for j in range(len(lista)-1):
+            if lista[j] > lista[j+1]:
+                lista[j], lista[j+1] = lista[j+1], lista[j]
+    return lista
+
+if __name__ == '__main__':
+    print(bsort([1,2,3,4,5,7,6,8,9,10]))
