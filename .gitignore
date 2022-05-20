@@ -126,3 +126,7 @@ dmypy.json
 app/modifyDict.pyZone.Identifier
 
 *.Identifier
+
+app/datos.csv
+
+*.csv
