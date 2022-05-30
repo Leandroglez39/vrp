@@ -48,7 +48,7 @@ def save_distance_matrix_cache():
         
         update_db_cache(distance_matrix_cache)
         #time.sleep(86,400)
-        time.sleep(10)
+        time.sleep(1800)
              
 def draw_graph(G):
 
