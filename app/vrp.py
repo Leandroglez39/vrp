@@ -157,8 +157,7 @@ def solve_vrp_fix(dist_matrix,
 
     demands = modifyDict(demands, round(load_capacity*0.9))   
 
-    
-
+  
     for key, value in demands.items():
         G.nodes[int(key)]['demand'] = value[0]
 
@@ -200,7 +199,9 @@ def solve_vrp_fix(dist_matrix,
             if value[i] in dad_child:
                 best_r[key][i] = dad_child[value[i]]
 
-    print( best_r)
+    #print(prob.node_load)
+
+
 
     return best_r
 
@@ -271,10 +272,11 @@ def dist_btw_coords(coords):
     
     segments = []
 
-    if len(list_coords) <= 70:
+    if len(list_coords) <= 70 and len(list_coords) > 0:
 
         info = openrouteservice_features(list_coords)
     
+
         segments = info['features'][0]['properties']['segments']
     else:
         c, r = divmod(len(list_coords), 70)

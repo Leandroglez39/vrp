@@ -100,7 +100,7 @@ def test():
 
     capacity = int(json_data["load_capacity"])
 
-    print(list_coors)
+
 
     dist_matrix = dist_btw_coords(list_coors)
 
