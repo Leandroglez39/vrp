@@ -1,6 +1,8 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
+
+from pyrsistent import v
 from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route, save_distance_matrix_cache, read_distance_matrix_cache_from_db, init_db_cache, solve_vrp_fix, dist_btw_coords
 
 import threading
@@ -84,37 +86,47 @@ def test():
     
     json_data = json.loads(dump_data) 
 
-    list_coors = convert_dict_to_list(json_data["coords"], flag=False)
+    v = validate(json_data)
+
+    if v:
+        list_coors = convert_dict_to_list(json_data["coords"], flag=False)
     
-    list_coors.append(list_coors[0])
+        list_coors.append(list_coors[0])
     
     
-    list_demands = json_data["demands"]
+        list_demands = json_data["demands"]
     
 
-    TIME_WINDOWS_LOWER = json_data["lower_time_windows"]
+        TIME_WINDOWS_LOWER = json_data["lower_time_windows"]
   
 
-    TIME_WINDOWS_UPPER = json_data["upper_time_windows"]
-    TIME_WINDOWS_UPPER[len(list_coors)-1] = 0
+        TIME_WINDOWS_UPPER = json_data["upper_time_windows"]
+        TIME_WINDOWS_UPPER[len(list_coors)-1] = 0
 
-    capacity = int(json_data["load_capacity"])
+        capacity = int(json_data["load_capacity"])
 
 
 
-    dist_matrix = dist_btw_coords(list_coors)
+        dist_matrix = dist_btw_coords(list_coors)
+
+            
+
+
+        best_r = solve_vrp_fix(dist_matrix, list_demands, capacity,
+                        TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
 
         
 
+        return make_response(jsonify(get_route(list_coors, best_r)), 200)
+    else:
+        return make_response(jsonify("Invalid data"), 400)
 
-    best_r = solve_vrp_fix(dist_matrix, list_demands, capacity,
-                    TIME_WINDOWS_LOWER, TIME_WINDOWS_UPPER)
-
-    
-
-    return make_response(jsonify(get_route(list_coors, best_r)), 200)
-
-
+def validate(json_data) -> bool:
+    if json_data["coords"] == None or json_data["demands"] == None or json_data["lower_time_windows"] == None or json_data["upper_time_windows"] == None or json_data["load_capacity"] == None:
+        return False
+    if json_data["load_capacity"] <= 0:
+        return False
+    return True
 if __name__ == '__main__':
     print("Server Running app in port %s"%(PORT))
 
