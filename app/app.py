@@ -2,7 +2,6 @@ from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 import json
 
-from pyrsistent import v
 from vrp import convert_dict_to_list, distace_between_coords, solve_vrp, openrouteservice_features, get_route, save_distance_matrix_cache, read_distance_matrix_cache_from_db, init_db_cache, solve_vrp_fix, dist_btw_coords
 
 import threading
@@ -127,6 +126,8 @@ def validate(json_data) -> bool:
     if json_data["load_capacity"] <= 0:
         return False
     return True
+
+    
 if __name__ == '__main__':
     print("Server Running app in port %s"%(PORT))
 
