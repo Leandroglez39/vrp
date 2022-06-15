@@ -123,7 +123,7 @@ def test():
 def validate(json_data) -> bool:
     if json_data["coords"] == None or json_data["demands"] == None or json_data["lower_time_windows"] == None or json_data["upper_time_windows"] == None or json_data["load_capacity"] == None:
         return False
-    if json_data["load_capacity"] <= 0:
+    if int(json_data["load_capacity"]) <= 0:
         return False
     return True
 
