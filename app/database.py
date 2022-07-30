@@ -9,7 +9,7 @@ Know if a table is empty
 def is_table_empty(table_name):
     conn = None
     try:       
-        conn = psycopg2.connect(database="postgres", user="postgres", password="Admin123*", host="gis-postgres.postgres.database.azure.com", port="5432")
+        conn = psycopg2.connect(database="postgres", user="postgres", password="Admin123*", host="10.142.0.3", port="5432")
         cur = conn.cursor()
         select_query = "SELECT * FROM {}".format(table_name)
         cur.execute(select_query)
@@ -30,7 +30,7 @@ def init_insert_db_cache():
     conn = None
     try:         
      
-        conn = psycopg2.connect(database="postgres", user="postgres", password="Admin123*", host="gis-postgres.postgres.database.azure.com", port="5432")
+        conn = psycopg2.connect(database="postgres", user="postgres", password="Admin123*", host="10.142.0.3", port="5432")
         cur = conn.cursor()
 
         update_query = "INSERT INTO api_coords_cache (id, value, time_stamp) VALUES (1, %s, %s)"
@@ -56,7 +56,7 @@ def save_db_cache(dictionaries: dict):
     conn = None
     try:         
      
-        conn = psycopg2.connect(database="postgres", user="postgres", password="Admin123*", host="gis-postgres.postgres.database.azure.com", port="5432")
+        conn = psycopg2.connect(database="postgres", user="postgres", password="Admin123*", host="10.142.0.3", port="5432")
         cur = conn.cursor()
         insert_query = "INSERT INTO api_coords_cache (id, value, time_stamp) VALUES (%s, %s, %s)"
         cur.execute(insert_query, (1, pickle.dumps(dictionaries),datetime.datetime.now()))   
@@ -76,7 +76,7 @@ def read_db_cache():
 
     conn = None
     try:       
-        conn = psycopg2.connect( database="postgres", user="postgres", password="Admin123*", host="gis-postgres.postgres.database.azure.com", port="5432")
+        conn = psycopg2.connect( database="postgres", user="postgres", password="Admin123*", host="10.142.0.3", port="5432")
         cur = conn.cursor()
         select_query = "SELECT * FROM api_coords_cache WHERE id = 1"
         cur.execute(select_query)
@@ -103,7 +103,7 @@ def update_db_cache(dictionaries: dict):
     conn = None
     try:         
      
-        conn = psycopg2.connect( database="postgres", user="postgres", password="Admin123*", host="gis-postgres.postgres.database.azure.com", port="5432")
+        conn = psycopg2.connect( database="postgres", user="postgres", password="Admin123*", host="10.142.0.3", port="5432")
         cur = conn.cursor()
         update_query = "UPDATE api_coords_cache SET value = %s , time_stamp= %s WHERE id = %s"
         cur.execute(update_query, (pickle.dumps(dictionaries), datetime.datetime.now() , 1))   
