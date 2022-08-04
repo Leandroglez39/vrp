@@ -69,7 +69,10 @@ def openrouteservice_features(coords):
             coords,
             profile="driving-car",
             extra_info=["waytype", "steepness"],
-            format='geojson')
+            format='geojson',
+            radiuses = 1500
+            )
+
         
         
     
